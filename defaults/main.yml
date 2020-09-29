@@ -5,4 +5,9 @@ postfix_service_state: started
 postfix_service_enabled: true
 
 postfix_inet_interfaces: localhost
-postfix_inet_protocols: all
+postfix_inet_protocols: ipv4
+
+postfix_sasl_secret_config: '/etc/postfix/sasl/sasl_passwd'
+
+postfix_smtp_upstream_server: ''
+postfix_smtp_upstrea_credentials: ''

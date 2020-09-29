@@ -1,7 +1,10 @@
 ---
-- name: Ensure postfix is installed.
-  package:
-    name: postfix
+- name: Ensure postfix and SAS libraries are installed.
+  apt:
+    name: 
+      - postfix
+      - libsasl2-modules
+    update_cache: yes
     state: present
 
 - name: Update Postfix configuration.
@@ -15,7 +18,31 @@
       value: "{{ postfix_inet_interfaces }}"
     - name: inet_protocols
       value: "{{ postfix_inet_protocols }}"
+    - name: myhostname
+      value: "{{ postfix_hostname }}"
+    - name: relayhost 
+      value: "{{ postfix_smtp_upstream_server }}"
+    - name: smtp_sasl_auth_enable 
+      value: 'yes'
+    - name: smtp_sasl_security_options 
+      value: 'noanonymous'
+    - name: smtp_sasl_password_maps 
+      value: 'hash:/etc/postfix/sasl/sasl_passwd'
+    - name: smtp_tls_security_level 
+      value: 'encrypt'
+    - name: smtp_tls_CAfile 
+      value: '/etc/ssl/certs/ca-certificates.crt'
+
   notify: restart postfix
+
+- name: Create sasl passwd file
+  template:
+    src: etc/postfix/sasl/sasl_passwd.j2
+    dest: /etc/postfix/sasl/sasl_passwd
+    owner: root
+    group: root
+    mode: 0600
+  notify: Hash sasl passwd file
 
 - name: Ensure postfix is started and enabled at boot.
   service:
