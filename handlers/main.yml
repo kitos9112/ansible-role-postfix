@@ -1,6 +1,3 @@
 ---
 - name: restart postfix
   service: name=postfix state=restarted
-
-- name: Hash sasl passwd file
-  shell: postmap /etc/postfix/sasl/sasl_passwd

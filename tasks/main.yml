@@ -27,7 +27,7 @@
     - name: smtp_sasl_security_options 
       value: 'noanonymous'
     - name: smtp_sasl_password_maps 
-      value: 'hash:/etc/postfix/sasl/sasl_passwd'
+      value: "hash:{{ postfix_sasl_secret_config }}"
     - name: smtp_tls_security_level 
       value: 'encrypt'
     - name: smtp_tls_CAfile 
@@ -38,11 +38,15 @@
 - name: Create sasl passwd file
   template:
     src: etc/postfix/sasl/sasl_passwd.j2
-    dest: /etc/postfix/sasl/sasl_passwd
+    dest: "{{ postfix_sasl_secret_config }}"
     owner: root
     group: root
     mode: 0600
-  notify: Hash sasl passwd file
+
+- name: Hash sasl passwd file
+  command: "postmap {{ postfix_sasl_secret_config }}"
+  args:
+    creates: "{{ postfix_sasl_secret_config }}.db"
 
 - name: Ensure postfix is started and enabled at boot.
   service:
