@@ -1,10 +1,10 @@
 ---
 - name: Ensure postfix and SAS libraries are installed.
   apt:
-    name: 
+    name:
       - postfix
       - libsasl2-modules
-    update_cache: yes
+    update_cache: true
     state: present
 
 - name: Update Postfix configuration.
@@ -20,18 +20,18 @@
       value: "{{ postfix_inet_protocols }}"
     - name: myhostname
       value: "{{ postfix_hostname }}"
-    - name: relayhost 
+    - name: relayhost
       value: "{{ postfix_smtp_upstream_server }}"
-    - name: smtp_sasl_auth_enable 
-      value: 'yes'
-    - name: smtp_sasl_security_options 
-      value: 'noanonymous'
-    - name: smtp_sasl_password_maps 
+    - name: smtp_sasl_auth_enable
+      value: "yes"
+    - name: smtp_sasl_security_options
+      value: "noanonymous"
+    - name: smtp_sasl_password_maps
       value: "hash:{{ postfix_sasl_secret_config }}"
-    - name: smtp_tls_security_level 
-      value: 'encrypt'
-    - name: smtp_tls_CAfile 
-      value: '/etc/ssl/certs/ca-certificates.crt'
+    - name: smtp_tls_security_level
+      value: "encrypt"
+    - name: smtp_tls_CAfile
+      value: "/etc/ssl/certs/ca-certificates.crt"
 
   notify: restart postfix
 
